@@ -4,33 +4,35 @@ import axios from 'axios'
 import WordProperties from './WordProperties/WordProperties'
 import GetFontColors from './GetFontColors/GetFontColors'
 import GetBackgroundColors from './GetBackgroundColors/GetBackgroundColors'
+import Download from './Download/Download'
 import { MDBContainer, MDBBtn } from 'mdbreact';
 
 class App extends Component{
     constructor(){
         super()
-    }
-    state = {
-        list: [],
-        options: {
-            colors: ["#000"],
-            enableTooltip: true,
-            deterministic: false,
-            fontFamily: 'impact',
-            fontSizes: [5, 60],
-            fontStyle: 'normal',
-            fontWeight: 'normal',
-            padding: 1,
-            rotations: 3,
-            rotationAngles: [0, 90],
-            scale: 'sqrt',
-            spiral: 'archimedean',
-            transitionDuration: 1000,
-        },
-        background: '#fff',
-        fontModal: false,
-        backgroundModal: false
-    }
+        this.state = {
+            list: [],
+            options: {
+                colors: ["#000"],
+                enableTooltip: true,
+                deterministic: false,
+                fontFamily: 'impact',
+                fontSizes: [5, 60],
+                fontStyle: 'normal',
+                fontWeight: 'normal',
+                padding: 1,
+                rotations: 3,
+                rotationAngles: [0, 90],
+                scale: 'sqrt',
+                spiral: 'archimedean',
+                transitionDuration: 1000,
+            },
+            background: '#fff',
+            fontModal: false,
+            backgroundModal: false,
+            download: false
+        }
+    } 
 
     toggleFontModal = () => {
         this.setState({
@@ -48,7 +50,7 @@ class App extends Component{
         e.preventDefault()
         const target = document.querySelector('textarea')
         const {value} = target
-        const url = "http://127.0.0.1:8000/api/generate"
+        const url = "https://boiling-forest-58141.herokuapp.com/api/generate"
         const data = {
             value: value
         }
@@ -114,27 +116,30 @@ class App extends Component{
         // const url = "http://127.0.0.1:8000/api/generate"
         // use post request
     }
-    componentDidMount(){
-        // 
+
+    toggleDownload = () => {
+        this.setState({
+            download: !this.state.download
+        })
     }
 
     render(){
         return (
             <MDBContainer>
                 <Canvas words={this.state.list} options={this.state.options} background={this.state.background} />
+                <Download download={this.toggleDownload} open={this.state.download} toggle={this.toggleDownload} />
                     <WordProperties 
                     selectFontColors={this.toggleFontModal}
                     selectBackgroundColor={this.toggleBackgroundModal}
                     />
-                <form onSubmit={this.getCloudHandler}>
+                <form className="ml-2">
                     <div className="form-group">
-                        <textarea className="form-control" cols="8" rows="12" onInput={e=>{}} placeholder="Input a url in the format http://www.example.com or input a list of words"></textarea>
+                        <textarea style={{border: "2px solid black", boxShadow: "2px 2px 3px rgba(0,0,0,0.2)"}} className="form-control" cols="8" rows="12" onInput={e=>{}} placeholder="Input a url in the format http://www.example.com or input a list of words"></textarea>
                     </div>
                     <GetFontColors isOpen={this.state.fontModal} setFontColor={this.setFontColor} toggle={this.toggleFontModal} />
                     <GetBackgroundColors toggle={this.toggleBackgroundModal} isOpen={this.state.backgroundModal} setBackgroundColor={this.setBackgroundColor} />
-                    <MDBBtn type="submit" color="dark" outline size ="lg">Generate Word Cloud</MDBBtn>
                 </form>
-                
+                <MDBBtn type="button" onClick={this.getCloudHandler} color="dark" outline size ="lg">Generate Word Cloud</MDBBtn>
             </MDBContainer>
         )
     }

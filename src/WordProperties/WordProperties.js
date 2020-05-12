@@ -3,10 +3,7 @@ import {MDBBtnGroup, MDBBtn, MDBRow, MDBCol, MDBIcon} from 'mdbreact'
 
 const WordProperties = (props)=>{
     return(
-        <div className = "wordProps" style={{
-            position: "relative",
-            top: "340px",
-        }}>
+        <div className = "wordProps">
             <MDBRow>
                 <MDBCol md='12' className="mb-4">
             <MDBBtnGroup size="sm">
